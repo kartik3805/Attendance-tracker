@@ -1,0 +1,468 @@
+        :root {
+            --primary: #061E29;
+            --primary-hover: #1B3C53;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --success: #10b981;
+            --failure: #c61339;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* App Container */
+        .app-container {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: 80vh; /* Simulate mobile screen height */
+        }
+
+        /* Header */
+        header {
+            padding: 20px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            background: #e0e7ff;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            background: white;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .view {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* --- Attendance View Styling --- */
+        .date-display {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .subject-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: var(--border-radius);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .subject-info h3 {
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .subject-info span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Custom Checkbox */
+        .checkbox-wrapper {
+            position: relative;
+        }
+
+        /* Hide default checkbox */
+        .attendance-check {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Custom Label/Button */
+        .check-label {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* Checkbox Checked State */
+        .attendance-check:checked ~ .check-label {
+            background-color: var(--failure);
+            color: white;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+        }
+
+        /* --- Settings View Styling --- */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-add:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .settings-list {
+            margin-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 15px;
+        }
+        
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.95rem;
+        }
+
+        .delete-btn {
+            color: #ef4444;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+
+
+
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #e0e7ff;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --success: #10b981;
+            --danger: #ef4444; /* Red for missed classes */
+            --warning: #f59e0b;
+            --border-radius: 16px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100vw;
+            max-width: 400px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            height: 85vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Header --- */
+        header {
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
+        
+        /* --- Content Area --- */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Tab Navigation (Bottom) --- */
+        .bottom-nav {
+            display: flex;
+            background: white;
+            border-top: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .nav-btn svg { width: 24px; height: 24px; fill: currentColor; }
+        .nav-btn.active { color: var(--primary); }
+
+        /* --- ATTENDANCE VIEW STYLES --- */
+        .date-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+        .date-sub { color: var(--text-muted); margin-bottom: 20px; display: block; font-size: 0.9rem;}
+
+        .subject-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid #eee;
+        }
+
+        .check-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: transparent;
+            border: 2px solid transparent;
+        }
+
+        input[type="checkbox"]:checked + .check-circle {
+            background-color: var(--success);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* --- SETTINGS VIEW STYLES --- */
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        .input-box { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; outline: none; }
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 0 20px; border-radius: 12px; cursor: pointer; font-weight: 600;}
+        .setting-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .btn-delete { color: var(--danger); background: none; border: none; cursor: pointer; font-size: 0.85rem;}
+
+        /* --- STATISTICS VIEW (NEW) --- */
+        
+        /* 1. Summary Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            border: 1px solid #eee;
+        }
+
+        .stat-number { display: block; font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* 2. Subject Progress Bars */
+        .section-title { font-size: 1rem; font-weight: 700; margin-bottom: 15px; color: var(--text-main); }
+        
+        .progress-card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+
+        .prog-header { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; font-weight: 600;}
+        
+        .progress-track {
+            height: 8px;
+            background: #f3f4f6;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        /* 3. History Log (Missed Classes) */
+        .history-list {
+            margin-top: 10px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid transparent;
+        }
+
+        .history-item.missed { border-left-color: var(--danger); }
+        .history-item.attended { border-left-color: var(--success); }
+
+        .date-badge {
+            background: #f3f4f6;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-right: 12px;
+            text-align: center;
+            min-width: 50px;
+        }
+
+        .history-details h4 { font-size: 0.95rem; color: var(--text-main); }
+        .history-details span { font-size: 0.8rem; color: var(--text-muted); }
+
+        .status-pill {
+            margin-left: auto;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .status-pill.missed { background: #fee2e2; color: var(--danger); }
+        .status-pill.attended { background: #d1fae5; color: var(--success); }
+
+
+    
