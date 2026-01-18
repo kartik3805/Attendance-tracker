@@ -26,9 +26,9 @@ const getLocalStorage = ()=>{
             return (data.subjects)
         }catch(err){
             console.log(err)
-            return []
+           
         }
-  }
+  }else return []
 }
 function UpdateList({subjectUpdate, RenderComponent='subjects'}) {
   const [subjectlist, setSubjectlist] = useState(getLocalStorage)
@@ -67,7 +67,7 @@ function UpdateList({subjectUpdate, RenderComponent='subjects'}) {
             }
             // console.log(item.subject_name ,' ', item.missed.length)
             return(
-                <Subjects name={item.subject_name} id={item.id} missed={item.missed.length} checkBox={isToday(updatedDate)}/>
+                <Subjects key={item.id} name={item.subject_name} id={item.id} missed={item.missed.length} checkBox={isToday(updatedDate)}/>
             )
        })}
 
@@ -81,7 +81,7 @@ function UpdateList({subjectUpdate, RenderComponent='subjects'}) {
     <>
        {subjectlist.map((item)=>{
             return(
-                <SettingItems name={item.subject_name} id={item.id}/>
+                <SettingItems key={item.id} name={item.subject_name} id={item.id}/>
             )
        })}
 

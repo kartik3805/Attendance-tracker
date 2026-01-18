@@ -97,8 +97,8 @@ function Home() {
             
             <div id="attendance-view" className={`view ${activeTab == 'attendance' ? 'active' : ''}`}>
                 {/* <span className="date-display" id="current-date">{}</span> */}
-                <div class="date-header" id="current-day">{days[today.getDay()]}</div>
-                <span class="date-sub" id="current-date">{`${today.toDateString().split(' ')[1]} ${today.getDate()}, ${today.getFullYear()}`}</span>
+                <div className="date-header" id="current-day">{days[today.getDay()]}</div>
+                <span className="date-sub" id="current-date">{`${today.toDateString().split(' ')[1]} ${today.getDate()}, ${today.getFullYear()}`}</span>
                 
                 <div id="subject-list-container">
                     <UpdateList subjectUpdate={addedsubject} />
@@ -136,7 +136,7 @@ function Home() {
 
         </div>
 
-        <nav class="bottom-nav">
+        <nav className="bottom-nav">
             <button className={`nav-btn ${activeTab == 'attendance' ? 'active' : ''}`} onClick={()=>{setActiveTab('attendance')}}>
                 <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
                 Today
