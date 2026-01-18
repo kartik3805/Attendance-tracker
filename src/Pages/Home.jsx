@@ -63,7 +63,7 @@ function Home() {
         subjects: [
             {
                 subject_name: newsubject,
-                id: generateUniqueId(local_storage_data.subjects,newsubject),
+                id: generateUniqueId([],newsubject),
                 missed: [],
                 total_lectures: totalLectures,
                 lastupdated: false
