@@ -143,11 +143,10 @@ function Home() {
              </form>
 
               <div className="settings-list">
-                    <div class="setting-row">
-                        <div id="settings-subject-list">
+                    <div id="settings-subject-list">
                         <UpdateList subjectUpdate={addedsubject} RenderComponent='SettingItems' />
                     </div>
-                    </div>
+               
                     
                 </div>
              </div>

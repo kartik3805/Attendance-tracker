@@ -393,7 +393,7 @@ header h1 {
         input:checked + .slider:before { transform: translateX(20px); }
 
 
-@media (max-width: 400px)  {
+@media (max-width: 500px)  {
     body {
     background-color: var(--bg);
     display: flex;
@@ -411,5 +411,6 @@ header h1 {
     flex-direction: column;
     overflow: hidden;
     position: relative;
+    max-width: 100vw;
 }
 }
