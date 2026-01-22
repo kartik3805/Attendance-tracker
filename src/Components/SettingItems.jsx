@@ -1,6 +1,6 @@
 import { useSubjectContext } from '../Contexts/SubjectContext'
 
-function SettingItems({name,id}) {  
+function SettingItems({name,id,repeating}) {  
   const {addedsubject, setAddedsubject} = useSubjectContext()
 
   const deleteSubject = (id)=>{
@@ -11,10 +11,18 @@ function SettingItems({name,id}) {
     localStorage.setItem('data', JSON.stringify(data))
     setAddedsubject(!addedsubject)
   }
+  console.log(repeating)
   return (
     <div>
         {/* target in callback can access all the params */}
-        <div className="settings-item">{name} <button id={id} onClick={(e)=>{deleteSubject(e.target.id)}} className="delete-btn">Remove</button></div>
+         <div className="setting-row">
+            <div className="setting-info">
+                <h4>{name}</h4>
+                <p>{repeating != undefined ? repeating.map(item=>item.value.slice(0,3) + ' ' ):''}</p>
+            </div>
+                <button id={id} onClick={(e)=>{deleteSubject(e.target.id)}} className="btn-delete">Remove</button>
+         </div>
+        {/* <div className="settings-item">{name} <button id={id} onClick={(e)=>{deleteSubject(e.target.id)}} className="delete-btn">Remove</button></div> */}
     </div>
   )
 }

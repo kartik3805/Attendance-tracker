@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Subjects from './Subjects'
 import SettingItems from './SettingItems'
 import { isToday } from '../utils/datecheck.js'
+import { useSubjectContext } from '../Contexts/SubjectContext.jsx'
 
 // If you call the function getLocalSubjects(), it runs every single time your component renders.
 // If you pass the reference getLocalSubjects, React only runs it once.
@@ -31,7 +32,11 @@ const getLocalStorage = ()=>{
   }else return []
 }
 function UpdateList({subjectUpdate, RenderComponent='subjects'}) {
+  const {mode} = useSubjectContext()
   const [subjectlist, setSubjectlist] = useState(getLocalStorage)
+  let today = new Date()
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 
   // useEffect runs AFTER the return statement, not before.
   
@@ -59,13 +64,19 @@ function UpdateList({subjectUpdate, RenderComponent='subjects'}) {
   return (
     <>
        {subjectlist.map((item)=>{
+            // console.log('map ran') //why its running t times the data?
             let updatedDate
             if(item.lastupdated){
                 updatedDate = new Date(item.lastupdated);
                 // console.log(isToday(updatedDate))
               
             }
-            // console.log(item.subject_name ,' ', item.missed.length)
+            // console.log(`mode: ${mode}`)
+            if(mode == 'Timetable'){
+                const checkDay = days[today.getDay()]
+                if(!item.repeating.map(item=>item.value).find(x=>x==checkDay)) return null
+                // console.log(item.subject_name ,' ', item.missed.length)
+            }
             return(
                 <Subjects key={item.id} name={item.subject_name} id={item.id} missed={item.missed.length} checkBox={isToday(updatedDate)}/>
             )
@@ -81,7 +92,7 @@ function UpdateList({subjectUpdate, RenderComponent='subjects'}) {
     <>
        {subjectlist.map((item)=>{
             return(
-                <SettingItems key={item.id} name={item.subject_name} id={item.id}/>
+                <SettingItems key={item.id} name={item.subject_name} id={item.id} repeating={item.repeating}/>
             )
        })}
 

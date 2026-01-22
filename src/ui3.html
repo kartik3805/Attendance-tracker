@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Tracker Pro</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #e0e7ff;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --border-radius: 16px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            height: 85vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Header --- */
+        header {
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
+        
+        /* --- Content Area --- */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Tab Navigation (Bottom) --- */
+        .bottom-nav {
+            display: flex;
+            background: white;
+            border-top: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .nav-btn svg { width: 24px; height: 24px; fill: currentColor; }
+        .nav-btn.active { color: var(--primary); }
+
+        /* --- ATTENDANCE VIEW STYLES --- */
+        .date-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+        .date-sub { color: var(--text-muted); margin-bottom: 20px; display: block; font-size: 0.9rem;}
+
+        .subject-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid #eee;
+        }
+
+        .check-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: transparent;
+            border: 2px solid transparent;
+        }
+
+        input[type="checkbox"]:checked + .check-circle {
+            background-color: var(--success);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* --- SETTINGS VIEW STYLES --- */
+        .settings-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+        }
+        
+        /* Experimental Section Specifics */
+        .settings-section.experimental {
+            border: 1px dashed var(--primary);
+            background: linear-gradient(to bottom right, #fdfaff, #f5f3ff);
+        }
+
+        .exp-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .flask-icon { color: var(--primary); width: 20px; height: 20px; }
+
+        .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .input-box { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; outline: none; }
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 0 20px; border-radius: 12px; cursor: pointer; font-weight: 600;}
+        
+        .setting-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 12px 0; 
+            border-bottom: 1px solid #f3f4f6; 
+        }
+        .setting-row:last-child { border-bottom: none; }
+        
+        .setting-info h4 { font-size: 0.95rem; color: var(--text-main); margin-bottom: 2px; }
+        .setting-info p { font-size: 0.8rem; color: var(--text-muted); }
+
+        .btn-delete { color: var(--danger); background: none; border: none; cursor: pointer; font-size: 0.85rem;}
+
+        /* Toggle Switch CSS */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #e5e7eb;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+
+        /* --- STATISTICS VIEW --- */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .stat-box { background: white; padding: 15px; border-radius: var(--border-radius); text-align: center; border: 1px solid #eee; }
+        .stat-number { display: block; font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); }
+        .section-title { font-size: 1rem; font-weight: 700; margin-bottom: 15px; color: var(--text-main); }
+        .progress-card { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #eee; }
+        .prog-header { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; font-weight: 600;}
+        .progress-track { height: 8px; background: #f3f4f6; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); border-radius: 10px; }
+        .history-list { margin-top: 10px; }
+        .history-item { display: flex; align-items: center; background: white; padding: 12px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid transparent; }
+        .history-item.missed { border-left-color: var(--danger); }
+        .date-badge { background: #f3f4f6; padding: 6px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-right: 12px; text-align: center; min-width: 50px; }
+        .history-details h4 { font-size: 0.95rem; color: var(--text-main); }
+        .history-details span { font-size: 0.8rem; color: var(--text-muted); }
+        .status-pill { margin-left: auto; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+        .status-pill.missed { background: #fee2e2; color: var(--danger); }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>My Attendance</h1>
+            <div style="width: 24px;"></div> 
+        </header>
+
+        <div class="content">
+            
+            <div id="view-home" class="view active">
+                <div class="date-header" id="current-day">Monday</div>
+                <span class="date-sub" id="current-date">Oct 24, 2023</span>
+
+                <div class="subject-card">
+                    <div>
+                        <h3>Mathematics</h3>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">10:00 AM</span>
+                    </div>
+                    <label>
+                        <input type="checkbox" style="display:none;">
+                        <div class="check-circle">&#10003;</div>
+                    </label>
+                </div>
+
+                <div class="subject-card">
+                    <div>
+                        <h3>Physics</h3>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">11:30 AM</span>
+                    </div>
+                    <label>
+                        <input type="checkbox" style="display:none;">
+                        <div class="check-circle">&#10003;</div>
+                    </label>
+                </div>
+            </div>
+
+            <div id="view-stats" class="view">
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span class="stat-number">85%</span>
+                        <span class="stat-label">Total Attendance</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number" style="color: var(--danger);">4</span>
+                        <span class="stat-label">Classes Missed</span>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Subject Performance</h3>
+                <div class="progress-card">
+                    <div class="prog-header">
+                        <span>Mathematics</span>
+                        <span>90%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width: 90%;"></div>
+                    </div>
+                </div>
+                <div class="progress-card">
+                    <div class="prog-header">
+                        <span>Physics</span>
+                        <span style="color: var(--danger);">65%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width: 65%; background: var(--danger);"></div>
+                    </div>
+                </div>
+
+                <h3 class="section-title" style="margin-top: 25px;">Recent Activity</h3>
+                <div class="history-list">
+                    <div class="history-item missed">
+                        <div class="date-badge">
+                            <div>OCT</div>
+                            <div>22</div>
+                        </div>
+                        <div class="history-details">
+                            <h4>Physics</h4>
+                            <span>Monday • 11:30 AM</span>
+                        </div>
+                        <div class="status-pill missed">Absent</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-settings" class="view">
+                
+                <div class="settings-section">
+                    <h3 class="section-title">Manage Subjects</h3>
+                    <div class="input-group">
+                        <input type="text" class="input-box" placeholder="Subject Name">
+                        <button class="btn-primary">Add</button>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <h4>Mathematics</h4>
+                            <p>Daily • 10:00 AM</p>
+                        </div>
+                        <button class="btn-delete">Remove</button>
+                    </div>
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <h4>Physics</h4>
+                            <p>Mon, Wed, Fri • 11:30 AM</p>
+                        </div>
+                        <button class="btn-delete">Remove</button>
+                    </div>
+                </div>
+
+                <div class="settings-section experimental">
+                    <div class="exp-header">
+                        <svg class="flask-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58z" style="display:none"/>
+                            <path d="M6 22h12a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2zm6-5c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm6-9l-2-4h-8l-2 4h12zM5 21v-4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4H5zM12 4V2"/>
+                            <path d="M18.8 8l-1.4-3H6.6L5.2 8h13.6zM12 2C10.5 2 7.2 2 7.2 2s-1 0-1 2l1.6 4H16.2L17.8 4c0-2-1-2-1-2s-3.3 0-4.8 0V1h-2v1zM6 10v9c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-9H6zm7 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                        </svg>
+                        <h3 class="section-title" style="margin-bottom:0; color: var(--primary);">Experimental</h3>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <h4>Predictive Analytics</h4>
+                            <p>Forecast attendance based on trends</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <h4>Strict Mode</h4>
+                            <p>Cannot uncheck attendance after 1hr</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-info">
+                            <h4>Auto-Dark Mode</h4>
+                            <p>Sync with device theme (Beta)</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <button class="nav-btn active" onclick="switchTab('home', this)">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                Today
+            </button>
+            <button class="nav-btn" onclick="switchTab('stats', this)">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                Stats
+            </button>
+            <button class="nav-btn" onclick="switchTab('settings', this)">
+                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                Settings
+            </button>
+        </nav>
+
+    </div>
+
+    <script>
+        // Set dates
+        const date = new Date();
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        document.getElementById('current-day').innerText = days[date.getDay()];
+        document.getElementById('current-date').innerText = `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+
+        // Tab Switcher
+        function switchTab(viewId, btnElement) {
+            // Hide all views
+            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+            // Remove active class from all buttons
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+            // Show target view
+            document.getElementById('view-' + viewId).classList.add('active');
+            // Activate button
+            btnElement.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>

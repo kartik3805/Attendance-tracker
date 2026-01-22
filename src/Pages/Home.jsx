@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import Subjects from '../Components/Subjects';
 import UpdateList from '../Components/UpdateList';
 import { useSubjectContext} from '../Contexts/SubjectContext';
+import PublicSettings from '../Components/PublicSettings';
+import HiddenSettings from '../Components/HiddenSettings';
+import SelectDays from '../Components/SelectDays';
 
 
 // Tab Switching Logic
@@ -39,7 +42,8 @@ const generateUniqueId = (subjects, name) => {
 function Home() {
     const [newsubject, setNewsubject] = useState(null)
     const [totalLectures, setTotalLectures] = useState(null)
-    const {addedsubject, setAddedsubject, activeTab, setActiveTab} = useSubjectContext()
+    const [selected, setSelected] = useState([]);
+    const {addedsubject, setAddedsubject, activeTab, setActiveTab, isEmpty} = useSubjectContext()
     let today = new Date()
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -55,6 +59,7 @@ function Home() {
             id: generateUniqueId(local_storage_data.subjects,newsubject),
             missed: [],
             total_lectures: totalLectures,
+            repeating: selected,
             lastupdated: false
 
         })
@@ -66,9 +71,11 @@ function Home() {
                 id: generateUniqueId([],newsubject),
                 missed: [],
                 total_lectures: totalLectures,
+                repeating: selected,
                 lastupdated: false
             }
-        ]
+        ],
+        mode: 'Absolute'
     }
     }
     
@@ -81,6 +88,7 @@ function Home() {
         // updateList()
 
     },[])
+
   return (
     <div>
         <div className="app-container">
@@ -111,28 +119,44 @@ function Home() {
                 </div>
             </div>
 
-            <div id="settings-view" className={`view ${activeTab == 'settings' ? 'active' : ''}`}>
+            <div id="settings-view"  className={`view ${activeTab == 'settings' ? 'active' : ''}`}>
              {/* remember on submit and not action */}
-              <form onSubmit={(e)=>addSubject(e)}>
+             <div className="settings-section">
+                <form onSubmit={(e)=>addSubject(e)}>
                 <div className="form-group">
-                    <label>Add New Subject</label>
+                    <label>Add New Subject*</label>
                     <input type="text" required onChange={(e)=>{setNewsubject(e.target.value)}} id="new-subject-input" placeholder="e.g. Chemistry"/>
                 </div>
                 <div className="form-group">
                     <label htmlFor='total-lectures'>Total lectures</label>
                     <input type="number" onChange={(e)=>{setTotalLectures(e.target.value)}} id="total-lectures" placeholder="0"/>
                 </div>
+                <div className="form-group">
+                    <label htmlFor='repeating'>Repeating On</label>
+                    <SelectDays id="repeating" state={selected} setState={setSelected}/>
+            
+                </div>
+            
+
                 <button type='submit' className="btn-add">+ Add Subject</button>
 
              </form>
-                
-                <div className="settings-list">
-                    <h4>Current Subjects</h4>
-                    <div id="settings-subject-list">
+
+              <div className="settings-list">
+                    <div class="setting-row">
+                        <div id="settings-subject-list">
                         <UpdateList subjectUpdate={addedsubject} RenderComponent='SettingItems' />
                     </div>
+                    </div>
+                    
                 </div>
-            </div>
+             </div>
+           
+                <PublicSettings/>
+
+                <HiddenSettings/>  
+
+           </div>
 
         </div>
 
