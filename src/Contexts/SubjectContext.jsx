@@ -17,6 +17,7 @@ function SubjectProvider({children}) {
   const [activeTab, setActiveTab] = useState('attendance')
   const [isEmpty, setIsEmpty] = useState(checkData)
   const [mode, setMode] = useState(setModeFromStorage())
+  const [cardDetail, setCardDetail] = useState(false)
   console.log(`Mode from context : ${mode}`)
   return (
     <div>
@@ -28,7 +29,9 @@ function SubjectProvider({children}) {
         isEmpty,
         setIsEmpty,
         mode, 
-        setMode
+        setMode,
+        cardDetail, 
+        setCardDetail
         }
         }>
             {children}

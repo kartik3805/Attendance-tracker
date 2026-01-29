@@ -150,8 +150,8 @@ function PublicSettings() {
   }
 
   return (
-    <div>
-        <button type='submit' onClick={loadPecData} className="btn-add">Load PEC Elec. data</button>
+    <div className="settings-section">
+        <button type='submit' onClick={loadPecData} className="btn-add">Load PEC Elec. G2E1 data</button>
     </div>
   )
 }

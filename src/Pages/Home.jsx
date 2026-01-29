@@ -5,6 +5,7 @@ import { useSubjectContext} from '../Contexts/SubjectContext';
 import PublicSettings from '../Components/PublicSettings';
 import HiddenSettings from '../Components/HiddenSettings';
 import SelectDays from '../Components/SelectDays';
+import SubjectDetails from '../Components/SubjectDetails';
 
 
 // Tab Switching Logic
@@ -43,7 +44,7 @@ function Home() {
     const [newsubject, setNewsubject] = useState(null)
     const [totalLectures, setTotalLectures] = useState(null)
     const [selected, setSelected] = useState([]);
-    const {addedsubject, setAddedsubject, activeTab, setActiveTab, isEmpty} = useSubjectContext()
+    const {addedsubject, setAddedsubject, activeTab, setActiveTab, isEmpty, setCardDetail, cardDetail} = useSubjectContext()
     let today = new Date()
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -158,6 +159,9 @@ function Home() {
            </div>
 
         </div>
+
+         <div id="modal-overlay" className={`modal-overlay ${cardDetail ? 'open': ''}`}  onClick={()=>setCardDetail(false)}></div>
+        <SubjectDetails/>
 
         <nav className="bottom-nav">
             <button className={`nav-btn ${activeTab == 'attendance' ? 'active' : ''}`} onClick={()=>{setActiveTab('attendance')}}>

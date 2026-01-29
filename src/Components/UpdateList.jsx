@@ -31,6 +31,9 @@ const getLocalStorage = ()=>{
         }
   }else return []
 }
+
+
+
 function UpdateList({subjectUpdate, RenderComponent='subjects'}) {
   const {mode} = useSubjectContext()
   const [subjectlist, setSubjectlist] = useState(getLocalStorage)
@@ -43,6 +46,7 @@ function UpdateList({subjectUpdate, RenderComponent='subjects'}) {
   useEffect(()=>{
     const newData = getLocalStorage()
     setSubjectlist(newData)
+    console.log('data loaded after calling addedsubject state')
   },[subjectUpdate])
 
 
@@ -60,6 +64,9 @@ function UpdateList({subjectUpdate, RenderComponent='subjects'}) {
   <Subjects name='No subject added 2' missed={68}/> */}
   {/* ****very map and react concept
   as it run before useeffect so there is empty array in start and two subjects are painted but there no changed of name when its updated after use effect and this does not happen with name as its direct and not dependent of usestate */}
+  <div className="content default-msg">
+    <p>You haven’t added any subjects yet. Go to the Settings section to add one</p>
+  </div>
   </>)
   return (
     <>
